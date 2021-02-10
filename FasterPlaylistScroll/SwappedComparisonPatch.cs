@@ -1,7 +1,7 @@
 ﻿using FasterPlaylistScroll.Configuration;
 using HarmonyLib;
 using HMUI;
-using PlaylistLoaderLite.HarmonyPatches;
+using PlaylistManager.HarmonyPatches;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace FasterPlaylistScroll
 {
-    [HarmonyPatch(typeof(ScrollingFix), "SwappedComparison")]
+    [HarmonyPatch(typeof(TableViewScroller_HandleJoystickWasNotCenteredThisFrame), "SwappedComparison")]
     public class SwappedComparisonPatch
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -21,7 +21,7 @@ namespace FasterPlaylistScroll
                 var instruction = newInstructions[i];
                 if (instruction.opcode == OpCodes.Ldc_R4)
                 {
-                    newInstructions[i] = new CodeInstruction(OpCodes.Ldc_R4, PluginConfig.Instance.ScrollMultiplier * 60f);
+                    newInstructions[i] = new CodeInstruction(OpCodes.Ldc_R4, PluginConfig.Instance.ScrollMultiplier * (float) instruction.operand);
                     break;
                 }
             }
